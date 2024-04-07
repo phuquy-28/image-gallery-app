@@ -22,64 +22,52 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewImage;
     private ImageAdapter imageAdapter;
+    public static int currentImageCount = 0;
+    public static final int IMAGE_BATCH_SIZE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-
-        myRef.setValue("Hello, World!");
-
-        // Read from the database
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-
         recyclerViewImage = findViewById(R.id.recyclerViewImage);
         imageAdapter = new ImageAdapter(this);
+//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("images");
+//
+//// 3. Sử dụng phương thức addValueEventListener
+//        databaseReference.orderByKey().limitToFirst(IMAGE_BATCH_SIZE).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                // 4. Lặp qua tất cả các mục con của DataSnapshot
+//                List<Image> imageList = new ArrayList<>();
+//                for (DataSnapshot imageSnapshot : dataSnapshot.getChildren()) {
+//                    Image image = imageSnapshot.getValue(Image.class);
+//                    imageList.add(image);
+//                }
+//
+//                // 5. Cập nhật ImageAdapter
+//                imageAdapter.setImageList(imageList);
+//                imageAdapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                // Xử lý lỗi
+//            }
+//        });
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        recyclerViewImage.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (!recyclerView.canScrollVertically(1)) {
+                    new LoadImagesTask(imageAdapter).execute();
+                }
+            }
+        });
+        new LoadImagesTask(imageAdapter).execute();
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerViewImage.setLayoutManager(gridLayoutManager);
-
-        imageAdapter.setImageList(getListImage());
         recyclerViewImage.setAdapter(imageAdapter);
     }
 
-    private List<Image> getListImage() {
-        List<Image> imageList = new ArrayList<>();
-        imageList.add(new Image(R.drawable.image1, "Image 1"));
-        imageList.add(new Image(R.drawable.image2, "Image 2"));
-        imageList.add(new Image(R.drawable.image3, "Image 3"));
-        imageList.add(new Image(R.drawable.image4, "Image 4"));
-
-        imageList.add(new Image(R.drawable.image1, "Image 1"));
-        imageList.add(new Image(R.drawable.image2, "Image 2"));
-        imageList.add(new Image(R.drawable.image3, "Image 3"));
-        imageList.add(new Image(R.drawable.image4, "Image 4"));
-
-        imageList.add(new Image(R.drawable.image1, "Image 1"));
-        imageList.add(new Image(R.drawable.image2, "Image 2"));
-        imageList.add(new Image(R.drawable.image3, "Image 3"));
-        imageList.add(new Image(R.drawable.image4, "Image 4"));
-
-        imageList.add(new Image(R.drawable.image1, "Image 1"));
-        imageList.add(new Image(R.drawable.image2, "Image 2"));
-        imageList.add(new Image(R.drawable.image3, "Image 3"));
-        imageList.add(new Image(R.drawable.image4, "Image 4"));
-        return imageList;
-    }
 }

@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
@@ -19,11 +22,24 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     public ImageAdapter(Context context) {
         this.context = context;
+        this.imageList = new ArrayList<>();
     }
 
     public void setImageList(List<Image> imageList) {
         this.imageList = imageList;
         notifyDataSetChanged();
+    }
+
+    public List<Image> getImageList() {
+        return imageList;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     @NonNull
@@ -36,18 +52,17 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Image image = imageList.get(position);
-        if (image == null)
-            return;
-        holder.imageView.setImageResource(image.getResourceImage());
+        if (image == null) return;
+//        holder.imageView.setImageResource(image.getUrlImage());
+//        holder.tvName.setText(image.getName());
+        Glide.with(context).load(image.getUrlImage()).into(holder.imageView);
         holder.tvName.setText(image.getName());
     }
 
     @Override
     public int getItemCount() {
-        if (imageList != null)
-            return imageList.size();
-        else
-            return 0;
+        if (imageList != null) return imageList.size();
+        else return 0;
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {
