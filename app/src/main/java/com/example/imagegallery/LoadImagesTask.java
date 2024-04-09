@@ -2,7 +2,7 @@ package com.example.imagegallery;
 
 import static com.example.imagegallery.MainActivity.IMAGE_BATCH_SIZE;
 import static com.example.imagegallery.MainActivity.currentImageCount;
-import static com.example.imagegallery.MainActivity.isAllLoaded;
+import static com.example.imagegallery.MainActivity.isLoading;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -29,6 +29,12 @@ public class LoadImagesTask extends AsyncTask<Void, Void, List<Image>> {
 
     @Override
     protected List<Image> doInBackground(Void... voids) {
+        List<Image> imageList = new ArrayList<>();
+        imageList = loadImages();
+        return imageList;
+    }
+
+    private List<Image> loadImages() {
         List<Image> imageList = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("images");
         CountDownLatch latch = new CountDownLatch(1);
@@ -62,19 +68,22 @@ public class LoadImagesTask extends AsyncTask<Void, Void, List<Image>> {
 
     @Override
     protected void onPostExecute(List<Image> imageList) {
-        // Cập nhật ImageAdapter với hình ảnh mới
+        updateImageAdapter(imageList);
+
+        if (imageList.size() == IMAGE_BATCH_SIZE) isLoading = false;  // Đã hết hình ảnh để tải
+
+        notificationForUser(imageList);
+        // Log thông báo
+        Log.d("LoadImagesTask", "Loaded " + imageList.size() + " images, total: " + currentImageCount);
+    }
+
+    private void updateImageAdapter(List<Image> imageList) {
         imageAdapter.getImageList().addAll(imageList);
         imageAdapter.notifyDataSetChanged();
         currentImageCount += imageList.size();
+    }
 
-        if (imageList.size() < IMAGE_BATCH_SIZE) {
-            isAllLoaded = true;  // Đã hết hình ảnh để tải
-        } else {
-            isAllLoaded = false;
-        }
-
-        // Log thông báo
-        Log.d("LoadImagesTask", "Loaded " + imageList.size() + " images, total: " + currentImageCount);
+    private void notificationForUser(List<Image> imageList) {
         Toast.makeText(imageAdapter.getContext(), "Loaded " + imageList.size() + " images, total: " + currentImageCount, Toast.LENGTH_SHORT).show();
     }
 }

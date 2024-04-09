@@ -20,18 +20,6 @@ public class Image {
     public void setUrlImage(String urlImage) {
         this.urlImage = urlImage;
     }
-    //    public Image(int resourceImage, String name) {
-//        this.resourceImage = resourceImage;
-//        this.name = name;
-//    }
-//
-//    public int getResourceImage() {
-//        return resourceImage;
-//    }
-//
-//    public void setResourceImage(int resourceImage) {
-//        this.resourceImage = resourceImage;
-//    }
 
     public String getName() {
         return name;

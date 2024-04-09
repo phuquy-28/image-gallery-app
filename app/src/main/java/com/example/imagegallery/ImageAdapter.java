@@ -53,8 +53,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Image image = imageList.get(position);
         if (image == null) return;
-//        holder.imageView.setImageResource(image.getUrlImage());
-//        holder.tvName.setText(image.getName());
         Glide.with(context).load(image.getUrlImage()).into(holder.imageView);
         holder.tvName.setText(image.getName());
     }
