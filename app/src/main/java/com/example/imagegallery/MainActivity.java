@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageAdapter imageAdapter;
     public static int currentImageCount = 0;
     public static final int IMAGE_BATCH_SIZE = 10;
+    public static boolean isAllLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,40 +32,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         recyclerViewImage = findViewById(R.id.recyclerViewImage);
         imageAdapter = new ImageAdapter(this);
-//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("images");
-//
-//// 3. Sử dụng phương thức addValueEventListener
-//        databaseReference.orderByKey().limitToFirst(IMAGE_BATCH_SIZE).addListenerForSingleValueEvent(new ValueEventListener() {
+        new LoadImagesTask(imageAdapter).execute();
+//        recyclerViewImage.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                // 4. Lặp qua tất cả các mục con của DataSnapshot
-//                List<Image> imageList = new ArrayList<>();
-//                for (DataSnapshot imageSnapshot : dataSnapshot.getChildren()) {
-//                    Image image = imageSnapshot.getValue(Image.class);
-//                    imageList.add(image);
+//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//                if (!recyclerView.canScrollVertically(1)) {
+//                    new LoadImagesTask(imageAdapter).execute();
 //                }
-//
-//                // 5. Cập nhật ImageAdapter
-//                imageAdapter.setImageList(imageList);
-//                imageAdapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                // Xử lý lỗi
 //            }
 //        });
-
         recyclerViewImage.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (!recyclerView.canScrollVertically(1)) {
+                GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+                if (!isAllLoaded && lastVisibleItem + 6 > totalItemCount) {
+                    isAllLoaded = true;
                     new LoadImagesTask(imageAdapter).execute();
                 }
             }
         });
-        new LoadImagesTask(imageAdapter).execute();
-
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerViewImage.setLayoutManager(gridLayoutManager);
         recyclerViewImage.setAdapter(imageAdapter);

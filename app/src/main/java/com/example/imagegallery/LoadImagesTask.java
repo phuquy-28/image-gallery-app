@@ -2,6 +2,7 @@ package com.example.imagegallery;
 
 import static com.example.imagegallery.MainActivity.IMAGE_BATCH_SIZE;
 import static com.example.imagegallery.MainActivity.currentImageCount;
+import static com.example.imagegallery.MainActivity.isAllLoaded;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -65,6 +66,13 @@ public class LoadImagesTask extends AsyncTask<Void, Void, List<Image>> {
         imageAdapter.getImageList().addAll(imageList);
         imageAdapter.notifyDataSetChanged();
         currentImageCount += imageList.size();
+
+        if (imageList.size() < IMAGE_BATCH_SIZE) {
+            isAllLoaded = true;  // Đã hết hình ảnh để tải
+        } else {
+            isAllLoaded = false;
+        }
+
         // Log thông báo
         Log.d("LoadImagesTask", "Loaded " + imageList.size() + " images, total: " + currentImageCount);
         Toast.makeText(imageAdapter.getContext(), "Loaded " + imageList.size() + " images, total: " + currentImageCount, Toast.LENGTH_SHORT).show();
