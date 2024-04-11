@@ -84,6 +84,6 @@ public class LoadImagesTask extends AsyncTask<Void, Void, List<Image>> {
     }
 
     private void notificationForUser(List<Image> imageList) {
-        Toast.makeText(imageAdapter.getContext(), "Loaded " + imageList.size() + " images, total: " + currentImageCount, Toast.LENGTH_SHORT).show();
+        Toast.makeText(imageAdapter.getContext(), "Loaded " + imageList.size() + " images, total: " + (currentImageCount-1), Toast.LENGTH_SHORT).show();
     }
 }
