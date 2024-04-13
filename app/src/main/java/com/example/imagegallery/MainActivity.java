@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewImage;
     private ImageAdapter imageAdapter;
     public static int currentImageCount = 1;
-    public static final int IMAGE_BATCH_SIZE = 10;
+    public static final int IMAGE_BATCH_SIZE = 50;
     public static boolean isLoading = false;
     ImageButton btnGoUpload;
 

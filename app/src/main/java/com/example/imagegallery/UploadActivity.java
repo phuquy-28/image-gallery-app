@@ -90,7 +90,7 @@ public class UploadActivity extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     String urlImage = uri.toString();
                                     String imageName = fileReference.getName();
-                                    UploadImage upload = new UploadImage(imageName, urlImage);
+                                    Image upload = new Image(imageName, urlImage);
 
                                     DatabaseReference indexRef = FirebaseDatabase.getInstance().getReference("images");
                                     indexRef.addListenerForSingleValueEvent(new ValueEventListener() {
