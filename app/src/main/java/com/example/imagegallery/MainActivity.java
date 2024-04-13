@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewImage;
     private ImageAdapter imageAdapter;
     public static int currentImageCount = 1;
-    public static final int IMAGE_BATCH_SIZE = 10;
+    public static final int IMAGE_BATCH_SIZE = 100;
     public static boolean isLoading = false;
     ImageButton btnGoUpload;
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewImage = findViewById(R.id.recyclerViewImage);
         imageAdapter = new ImageAdapter(this);
         recyclerViewImage.setAdapter(imageAdapter);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 6);
         recyclerViewImage.setLayoutManager(gridLayoutManager);
     }
 
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                if (!isLoading && lastVisibleItem + 6 > totalItemCount) {
+                if (!isLoading && lastVisibleItem + 0 > totalItemCount) {
                     isLoading = true;
                     new LoadImagesTask(imageAdapter).execute();
                 }

@@ -74,7 +74,7 @@ public class LoadImagesTask extends AsyncTask<Void, Void, List<Image>> {
 
         notificationForUser(imageList);
         // Log thông báo
-        Log.d("LoadImagesTask", "Loaded " + imageList.size() + " images, total: " + currentImageCount);
+        Log.d("LoadImagesTask", "Loaded " + imageList.size() + " images, total: " + (currentImageCount-1));
     }
 
     private void updateImageAdapter(List<Image> imageList) {
