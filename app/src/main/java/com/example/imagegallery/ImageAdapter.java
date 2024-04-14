@@ -60,6 +60,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         if (image == null) return;
         Glide.with(context).load(image.getUrlImage()).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).into(holder.imageView);
         holder.tvName.setText(image.getName());
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (position != RecyclerView.NO_POSITION) {
+                    Image clickedDataItem = imageList.get(position);
+                    String imageUrl = clickedDataItem.getUrlImage();
+                    if (imageUrl != null && !imageUrl.isEmpty()) {
+                        Intent intent = new Intent(context, FullScreenActivity.class);
+                        intent.putExtra("URL", imageUrl);
+                        context.startActivity(intent);
+                    } else {
+                        Log.e("ImageViewHolder", "Image URL is null or empty");
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -77,24 +93,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
             imageView = itemView.findViewById(R.id.imageViewItem);
             tvName = itemView.findViewById(R.id.textViewNameItem);
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        Image clickedDataItem = imageList.get(position);
-                        String imageUrl = clickedDataItem.getUrlImage();
-                        if (imageUrl != null && !imageUrl.isEmpty()) {
-                            Intent intent = new Intent(context, FullScreenActivity.class);
-                            intent.putExtra("URL", imageUrl);
-                            context.startActivity(intent);
-                        } else {
-                            Log.e("ImageViewHolder", "Image URL is null or empty");
-                        }
-                    }
-                }
-            });
         }
 
     }

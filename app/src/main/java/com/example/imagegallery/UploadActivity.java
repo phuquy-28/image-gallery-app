@@ -8,8 +8,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,6 +36,7 @@ public class UploadActivity extends AppCompatActivity {
     private Uri imageUri;
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
+    ProgressBar progressBar;
     private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
@@ -45,6 +48,7 @@ public class UploadActivity extends AppCompatActivity {
         buttonBack = findViewById(R.id.buttonBack);
         buttonChoose = findViewById(R.id.buttonChooseImage);
         buttonUpload = findViewById(R.id.buttonUploadImage);
+        progressBar = findViewById(R.id.progressBar);
 
         buttonBack.setOnClickListener(v -> {
             finish();
@@ -54,10 +58,11 @@ public class UploadActivity extends AppCompatActivity {
             chooseImage();
         });
 
-        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
 
         buttonUpload.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
             uploadImage();
         });
     }
@@ -90,7 +95,7 @@ public class UploadActivity extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     String urlImage = uri.toString();
                                     String imageName = fileReference.getName();
-                                    UploadImage upload = new UploadImage(imageName, urlImage);
+                                    Image upload = new Image(imageName, urlImage);
 
                                     DatabaseReference indexRef = FirebaseDatabase.getInstance().getReference("images");
                                     indexRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -114,6 +119,7 @@ public class UploadActivity extends AppCompatActivity {
                                         public void onCancelled(@NonNull DatabaseError databaseError) {
                                             // Log the error
                                             Log.e("Upload error", databaseError.getMessage(), databaseError.toException());
+                                            progressBar.setVisibility(View.GONE);
                                         }
                                     });
                                 }
